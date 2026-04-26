@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 823a9218a288fc64ca430fb523f19f23, type: 3}
-  m_Name: BasicFloor
+  m_Name: Grass_Floor_001
   m_EditorClassIdentifier: Assembly-CSharp::TileData
   walkable: 1
   walkCost: 1

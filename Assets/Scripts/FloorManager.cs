@@ -50,6 +50,14 @@ public class FloorManager : MonoBehaviour
         SetFloorVisibility(firstFloorTilemap, firstFloorRenderer, 1);
     }
 
+    public Tilemap GetTilemap(int floor) => floor switch
+    {
+        -1 => basementTilemap,
+         0 => groundFloorTilemap,
+         1 => firstFloorTilemap,
+         _ => null
+    };
+
     private void SetFloorVisibility(Tilemap tilemap, TilemapRenderer renderer, int floorLevel)
     {
         // Hide all the floors that are above my current set floor

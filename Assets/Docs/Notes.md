@@ -1,5 +1,1 @@
-1: Handle how tiles work for movement
-
-Is a tile passable?
-How difficult is it to walk on this tile? Sand < Grass < Pavement
-Does this tile have walls?
+1: Create a tile class so that we can combine a sprite and the custom

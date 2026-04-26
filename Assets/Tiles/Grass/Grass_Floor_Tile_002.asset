@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 50129771cd990fe428533ab539b66441, type: 3}
-  m_Name: NewHomeTownTile
+  m_Name: Grass_Floor_Tile_002
   m_EditorClassIdentifier: Assembly-CSharp::CustomTile
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
