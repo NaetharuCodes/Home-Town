@@ -57,11 +57,14 @@ public class PathfindingGrid : MonoBehaviour
     }
 
     // Checks walkability of destination AND wall edges on both cells.
-    // You can't walk if either the current cell has an exit wall or the next cell has an entry wall
-    // that sits between you and it!
+    // Also checks if a wall from BuildingManager is blocking the path.
     public bool CanMove(Vector3Int from, Vector3Int to, int floor)
     {
         if (!IsWalkable(to, floor)) return false;
+
+        // Check if a wall is blocking this movement
+        if (BuildingManager.Instance != null && BuildingManager.Instance.IsWallBlocking(to, floor))
+            return false;
 
         var dir = new Vector2Int(to.x - from.x, to.y - from.y);
         TileData fromData = GetTileData(from, floor);
