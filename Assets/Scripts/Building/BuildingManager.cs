@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class BuildingManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class BuildingManager : MonoBehaviour
     private WallGrid wallGrid = new();
     private BuildingBlueprint activeBlueprint;
     private bool blueprintModeActive = false;
+
+    [SerializeField] private CustomTile wallTilePrefab;
 
     public event System.Action OnBlueprintLocked;
     public event System.Action OnConstructionStarted;
@@ -39,6 +42,11 @@ public class BuildingManager : MonoBehaviour
     {
         blueprintModeActive = true;
         activeBlueprint = new BuildingBlueprint();
+
+        // Disable click-to-move during blueprint design
+        ClickToMove clickToMove = FindObjectOfType<ClickToMove>();
+        if (clickToMove) clickToMove.enabled = false;
+
         OnArchitectArrived?.Invoke();
         Debug.Log("[BuildingManager] Blueprint mode started. Player can now design.");
     }
@@ -81,6 +89,11 @@ public class BuildingManager : MonoBehaviour
         activeBlueprint.LockBlueprint(buildStartDate, daysPerTile: 1);
 
         blueprintModeActive = false;
+
+        // Re-enable click-to-move
+        ClickToMove clickToMove = FindObjectOfType<ClickToMove>();
+        if (clickToMove) clickToMove.enabled = true;
+
         OnBlueprintLocked?.Invoke();
 
         Debug.Log($"[BuildingManager] Blueprint locked. Build scheduled for {buildStartDate:yyyy-MM-dd}. Duration: {activeBlueprint.daysToComplete} days.");
@@ -131,6 +144,22 @@ public class BuildingManager : MonoBehaviour
         foreach (var wall in activeBlueprint.plannedWalls)
         {
             wall.state = WallState.Completed;
+        }
+
+        // Place wall tiles on the tilemap
+        Debug.Log($"[BuildingManager] wallTilePrefab is {(wallTilePrefab == null ? "NULL" : "assigned")}");
+
+        if (wallTilePrefab != null)
+        {
+            Tilemap tilemap = FloorManager.Instance.GetTilemap(0);
+            Debug.Log($"[BuildingManager] Tilemap is {(tilemap == null ? "NULL" : "valid")}");
+            Debug.Log($"[BuildingManager] Placing {activeBlueprint.plannedWalls.Count} wall tiles");
+
+            foreach (var wall in activeBlueprint.plannedWalls)
+            {
+                Debug.Log($"[BuildingManager] SetTile at {wall.position}");
+                tilemap.SetTile(wall.position, wallTilePrefab);
+            }
         }
 
         OnConstructionCompleted?.Invoke();

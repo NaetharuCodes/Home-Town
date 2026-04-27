@@ -62,17 +62,6 @@ public class PathfindingGrid : MonoBehaviour
     {
         if (!IsWalkable(to, floor)) return false;
 
-        // Check if a wall is blocking this movement
-        if (BuildingManager.Instance != null && BuildingManager.Instance.IsWallBlocking(to, floor))
-            return false;
-
-        var dir = new Vector2Int(to.x - from.x, to.y - from.y);
-        TileData fromData = GetTileData(from, floor);
-        TileData toData = GetTileData(to, floor);
-
-        if (fromData != null && fromData.HasWall(dir)) return false;
-        if (toData != null && toData.HasWall(new Vector2Int(-dir.x, -dir.y))) return false;
-
         return true;
     }
 
