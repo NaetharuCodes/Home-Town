@@ -52,14 +52,14 @@ public class AgentBrain : MonoBehaviour
 
     private void Start()
     {
-        GameTimeManager.Instance.OnTimeChanged += OnDayTick;
+        GameTimeManager.Instance.OnDayChanged += OnDayTick;
         Decide();
     }
 
     private void OnDisable()
     {
         if (GameTimeManager.Instance != null)
-            GameTimeManager.Instance.OnTimeChanged -= OnDayTick;
+            GameTimeManager.Instance.OnDayChanged -= OnDayTick;
     }
 
     private void OnDayTick(DateTime currentTime)
@@ -118,14 +118,15 @@ public class AgentBrain : MonoBehaviour
 
     private bool TryObligation()
     {
-        DayOfWeek today = GameTimeManager.Instance.CurrentTime.DayOfWeek;
+        DateTime now = GameTimeManager.Instance.CurrentTime;
 
         foreach (var activity in Data.Activities)
         {
             foreach (var scheduled in activity.GetSchedule(Data))
             {
-                if (!scheduled.IsActiveOn(today)) continue;
+                if (!scheduled.IsActiveOn(now.DayOfWeek)) continue;
                 if (completedToday.Contains(scheduled.Description)) continue;
+                if (!scheduled.IsTimeToStart(now)) continue;
 
                 ExecuteScheduledAction(scheduled);
                 return true;

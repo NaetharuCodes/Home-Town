@@ -84,13 +84,13 @@ public class AgentNeeds : MonoBehaviour
 
     private void Start()
     {
-        GameTimeManager.Instance.OnTimeChanged += OnDayTick;
+        GameTimeManager.Instance.OnDayChanged += OnDayTick;
     }
 
     private void OnDisable()
     {
         if (GameTimeManager.Instance != null)
-            GameTimeManager.Instance.OnTimeChanged -= OnDayTick;
+            GameTimeManager.Instance.OnDayChanged -= OnDayTick;
     }
 
     private void OnDayTick(DateTime _)

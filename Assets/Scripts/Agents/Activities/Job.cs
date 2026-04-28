@@ -7,10 +7,11 @@ public class Job : AgentActivity
     public string Title;
     public Vector3Int WorkplaceTile;
     public float Salary;
-    public float Performance = 0.5f; // 0-1, can affect promotions/firing later
+    public float Performance = 0.5f;
 
-    public int StartHour = 9;
-    public int EndHour = 17;
+    public int StartHour   = 9;
+    public int StartMinute = 0;
+    public int EndHour     = 17;
 
     private static readonly DayOfWeek[] WorkDays =
     {
@@ -27,24 +28,27 @@ public class Job : AgentActivity
 
     public override IEnumerable<ScheduledAction> GetSchedule(AgentData agent)
     {
-        float hoursAtWork = EndHour - StartHour;
-        float duration = (hoursAtWork / 24f) * GameTimeManager.Instance.SecondsPerGameDay;
+        float hoursAtWork  = EndHour - StartHour;
+        float secondsPerHour = GameTimeManager.Instance.SecondsPerGameDay / 24f;
+        float duration     = hoursAtWork * secondsPerHour;
 
         yield return new ScheduledAction
         {
-            Description = $"Go to work ({Title})",
-            ActiveDays = WorkDays,
-            Destination = WorkplaceTile,
-            NeedFulfilled = NeedType.Achievement,
+            Description      = $"Go to work ({Title})",
+            ActiveDays       = WorkDays,
+            StartHour        = StartHour,
+            StartMinute      = StartMinute,
+            EndHour          = EndHour,
+            Destination      = WorkplaceTile,
+            NeedFulfilled    = NeedType.Achievement,
             FulfillmentAmount = 0.5f,
-            IsRabbitHole = true,
+            IsRabbitHole     = true,
             RabbitHoleDuration = duration
         };
     }
 
     public override void OnDayTick(AgentData agent, AgentNeeds needs)
     {
-        // Trait example: ambitious agents get a daily achievement bonus
         if (agent.HasTrait("ambitious"))
             needs.Fulfill(NeedType.Achievement, 0.1f);
     }
