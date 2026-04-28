@@ -102,6 +102,9 @@ GameObject:
   - component: {fileID: 5215761604949835432}
   - component: {fileID: -3768343633423035183}
   - component: {fileID: 9014531800489360558}
+  - component: {fileID: 8630778253785309899}
+  - component: {fileID: -3039640298405381964}
+  - component: {fileID: 3383180486451524793}
   m_Layer: 0
   m_Name: Agent
   m_TagString: Untagged
@@ -151,3 +154,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e644f90540e69f4aac3c2cbe1ec4c06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickToMove
+--- !u!114 &8630778253785309899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3130430895333406103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8592472fed1ed4dbebaf4bf63f1036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AgentNeeds
+--- !u!114 &-3039640298405381964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3130430895333406103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff85385853fdd954492f4d3186a3a8b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AgentBrain
+--- !u!114 &3383180486451524793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3130430895333406103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 477860e1fd0af7643be9f47aa5e7b955, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AgentBootstrap
+  agentName: Alice
+  lifeStage: 6
+  homeTile: {x: 0, y: 0, z: 0}
+  hasJob: 0
+  jobTitle: Baker
+  jobSalary: 50
+  workplaceTile: {x: 0, y: 0, z: 0}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class Agent : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private Coroutine moveRoutine;
+    private bool rabbitHoleHidden = false;
+    private int lastViewFloor = 0;
 
     private void Awake()
     {
@@ -19,32 +22,72 @@ public class Agent : MonoBehaviour
 
     private void Start()
     {
-        FloorManager.Instance.OnViewFloorChanged += UpdateVisibility;
+        lastViewFloor = FloorManager.Instance.ViewFloor;
+        FloorManager.Instance.OnViewFloorChanged += OnViewFloorChanged;
     }
 
     private void OnDisable()
     {
         if (FloorManager.Instance != null)
-            FloorManager.Instance.OnViewFloorChanged -= UpdateVisibility;
+            FloorManager.Instance.OnViewFloorChanged -= OnViewFloorChanged;
     }
 
-    public void MoveTo(Vector3Int goalCell)
+    public void MoveTo(Vector3Int goalCell, Action onArrival = null)
     {
         Vector3Int startCell = WorldToCell(transform.position);
         List<Vector3Int> path = AStarPathfinder.FindPath(startCell, goalCell, currentFloor);
-        if (path == null || path.Count <= 1) return;
+        if (path == null || path.Count <= 1)
+        {
+            onArrival?.Invoke();
+            return;
+        }
 
         if (moveRoutine != null) StopCoroutine(moveRoutine);
-        moveRoutine = StartCoroutine(FollowPath(path));
+        moveRoutine = StartCoroutine(FollowPath(path, onArrival));
     }
 
     public Vector3Int WorldToCell(Vector3 worldPos)
     {
         worldPos.z = 0f;
-        return FloorManager.Instance.GetTilemap(currentFloor).WorldToCell(worldPos);
+        var tilemap = FloorManager.Instance?.GetTilemap(currentFloor);
+        if (tilemap == null)
+        {
+            Debug.LogError($"[Agent] No tilemap for floor {currentFloor} — check FloorManager inspector assignments.");
+            return Vector3Int.zero;
+        }
+        return tilemap.WorldToCell(worldPos);
     }
 
-    private IEnumerator FollowPath(List<Vector3Int> path)
+    // Hides the agent sprite for rabbit hole activities
+    public void SetRabbitHoleHidden(bool hidden)
+    {
+        rabbitHoleHidden = hidden;
+        ApplyVisibility();
+    }
+
+    private void OnViewFloorChanged(int viewFloor)
+    {
+        lastViewFloor = viewFloor;
+        ApplyVisibility();
+    }
+
+    private void ApplyVisibility()
+    {
+        if (spriteRenderer == null) return;
+
+        if (rabbitHoleHidden)
+        {
+            spriteRenderer.enabled = false;
+            return;
+        }
+
+        spriteRenderer.enabled = true;
+        Color c = spriteRenderer.color;
+        c.a = currentFloor <= lastViewFloor ? 1f : 0f;
+        spriteRenderer.color = c;
+    }
+
+    private IEnumerator FollowPath(List<Vector3Int> path, Action onArrival)
     {
         var tilemap = FloorManager.Instance.GetTilemap(currentFloor);
 
@@ -64,14 +107,6 @@ public class Agent : MonoBehaviour
         }
 
         moveRoutine = null;
-    }
-
-    private void UpdateVisibility(int viewFloor)
-    {
-        if (spriteRenderer == null) return;
-        bool visible = currentFloor <= viewFloor;
-        Color c = spriteRenderer.color;
-        c.a = visible ? 1f : 0f;
-        spriteRenderer.color = c;
+        onArrival?.Invoke();
     }
 }

@@ -11,6 +11,7 @@ public class GameTimeManager : MonoBehaviour
     public event System.Action<DateTime> OnTimeChanged;
 
     [SerializeField] private float secondsPerGameDay = 60f; // 1 real minute = 1 game day (for testing)
+    public float SecondsPerGameDay => secondsPerGameDay;
     private float dayTimer = 0f;
 
     private void Awake()
